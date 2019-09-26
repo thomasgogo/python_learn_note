@@ -1,0 +1,9 @@
+像 k in my_dict.keys() 这种操作在 Python 3 中是很快的，而且即便映射类
+型对象很庞大也没关系。这是因为 dict.keys() 的返回值是一个“视图”。视图就像
+一个集合，而且跟字典类似的是，在视图里查找一个元素的速度很快。在“Dictionary
+view objects”（https://docs.python.org/3/library/stdtypes.html#dictionary-view-objects）里
+可以找到关于这个细节的文档。 Python 2 的 dict.keys() 返回的是个列表，因此虽
+然上面的方法仍然是正确的，它在处理体积大的对象的时候效率不会太高，因为 k
+in my_list 操作需要扫描整个列表。
+
+摘自流畅的python
