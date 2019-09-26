@@ -2,3 +2,24 @@
 后者的速度要慢一些，因为 Python 必须先从 set 这个名字来查询构造方法，然后新建一
 个列表，最后再把这个列表传入到构造方法里。但是如果是像 {1, 2, 3} 这样的字面
 量， Python 会利用一个专门的叫作 BUILD_SET 的字节码来创建集合。
+
+用 dis.dis（反汇编函数）来看看两个方法的字节码的不同：
+>>> from dis import dis
+>>> dis('{1}') ➊
+1 0 LOAD_CONST 0 (1)
+3 BUILD_SET 1 ➋
+6 RETURN_VALUE
+>>> dis('set([1])') ➌
+1 0 LOAD_NAME 0 (set) ➍
+3 LOAD_CONST 0 (1)
+6 BUILD_LIST 1
+9 CALL_FUNCTION 1 (1 positional, 0 keyword pair)
+12 RETURN_VALUE
+➊ 检查 {1} 字面量背后的字节码。
+➋ 特殊的字节码 BUILD_SET 几乎完成了所有的工作。
+➌ set([1]) 的字节码。
+➍ 3 种不同的操作代替了上面的 BUILD_SET： LOAD_NAME、 BUILD_LIST 和
+CALL_FUNCTION。
+
+
+更进一步进行分析,list,dict,tuple通过这种构造方法创建的对象也会相对慢一些
